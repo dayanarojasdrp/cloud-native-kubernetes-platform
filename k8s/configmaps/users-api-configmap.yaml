@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: users-api-config
+  namespace: users-api
+  labels:
+    app.kubernetes.io/name: users-api
+    app.kubernetes.io/part-of: cloud-native-kubernetes-platform
+data:
+  APP_ENV: "development"
+  PORT: "8080"
+  LOG_LEVEL: "info"
+  READ_TIMEOUT: "5s"
+  WRITE_TIMEOUT: "10s"
+  IDLE_TIMEOUT: "60s"
+  REQUEST_TIMEOUT: "3s"

@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-initdb
+  namespace: users-api
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/part-of: cloud-native-kubernetes-platform
+data:
+  001_create_users_table.sql: |
+    CREATE TABLE IF NOT EXISTS users (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL CHECK (length(trim(name)) > 0),
+      email TEXT NOT NULL UNIQUE CHECK (position('@' in email) > 1),
+      age INTEGER NOT NULL CHECK (age > 0 AND age <= 130),
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_users_created_at
+    ON users (created_at DESC);
