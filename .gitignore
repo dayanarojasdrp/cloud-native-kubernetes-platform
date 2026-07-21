@@ -1,0 +1,19 @@
+# Local Kubernetes secrets
+k8s/secrets/*.local.yaml
+
+# Local environment files
+.env
+.env.local
+
+# macOS
+.DS_Store
+
+# VS Code local settings
+.vscode/
+
+# Temporary files
+*.log
+*.tmp
+
+# Local helper binaries
+.bin/
