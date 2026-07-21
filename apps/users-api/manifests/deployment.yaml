@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-api
+  namespace: users-api
+  labels:
+    app.kubernetes.io/name: users-api
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: cloud-native-kubernetes-platform
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: users-api
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: users-api
+        app.kubernetes.io/component: api
+        app.kubernetes.io/part-of: cloud-native-kubernetes-platform
+
+    spec:
+      containers:
+        - name: users-api
+          image: users-api:phase1-v1
+          imagePullPolicy: IfNotPresent
+
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+
+          envFrom:
+            - configMapRef:
+                name: users-api-config
+
+          env:
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: database-credentials
+                  key: DB_URL
+
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 6
+
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi

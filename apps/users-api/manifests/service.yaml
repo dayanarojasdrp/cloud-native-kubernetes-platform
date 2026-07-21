@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-api
+  namespace: users-api
+  labels:
+    app.kubernetes.io/name: users-api
+    app.kubernetes.io/component: api
+    app.kubernetes.io/part-of: cloud-native-kubernetes-platform
+spec:
+  type: ClusterIP
+
+  selector:
+    app.kubernetes.io/name: users-api
+
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
