@@ -2,13 +2,13 @@
 
 ## Overview
 
-This repository demonstrates how to deploy and operate a cloud-native Go API on Kubernetes using modern DevOps practices.
+This repository demonstrates a production-style Kubernetes platform for deploying and operating a cloud-native Go API.
 
-The platform is built incrementally. Phase 1 focuses on a reproducible local Kubernetes cluster and a clean application deployment using native Kubernetes resources.
+The project is built incrementally. Phase 1 established the Kubernetes foundation. Phase 2 adds platform features that make the deployment more realistic: Ingress, HTTPS, Helm packaging, autoscaling, and rolling updates.
 
 ## Current Status
 
-Phase 1: Kubernetes foundation and basic application deployment.
+Phase 2: Professional Kubernetes platform features.
 
 ## What This Project Demonstrates
 
@@ -18,18 +18,21 @@ Phase 1: Kubernetes foundation and basic application deployment.
 - Resource management
 - Service discovery
 - Local reproducible cluster
+- Ingress-based external access
+- TLS termination
+- Helm-based application packaging
+- Horizontal Pod Autoscaling
+- Rolling updates and rollback
+- Environment-specific values
 
-## Phase 1 Components
+## Platform Features
 
-- Kind local Kubernetes cluster
-- Dedicated namespace
-- Users API Deployment
-- Internal ClusterIP Service
-- PostgreSQL development database
-- ConfigMap-based application configuration
-- Secret-based database configuration
-- Liveness and readiness probes
-- CPU and memory requests and limits
+- Ingress-based external access
+- TLS termination
+- Helm-based application packaging
+- Horizontal Pod Autoscaling
+- Rolling updates and rollback
+- Environment-specific values
 
 ## Application
 
@@ -47,10 +50,16 @@ See `docs/architecture.md`.
 
 ## Quick Start
 
-Create the local Kind cluster:
+Create or recreate the local Kind cluster:
 
 ```bash
 ./scripts/setup-kind.sh
+```
+
+If an older Phase 1 cluster already exists and does not expose ports 80 and 443, recreate it with:
+
+```bash
+RESET_CLUSTER=true ./scripts/setup-kind.sh
 ```
 
 Build the API image and load it into Kind:
@@ -59,37 +68,116 @@ Build the API image and load it into Kind:
 ./scripts/build-and-load-image.sh
 ```
 
-Apply the Phase 1 resources:
+Apply the namespace, PostgreSQL configuration, local database Secret, and temporary PostgreSQL database:
 
 ```bash
 kubectl apply -f k8s/namespaces/users-api.yaml
-kubectl apply -f k8s/configmaps/
+kubectl apply -f k8s/configmaps/postgres-initdb-configmap.yaml
 kubectl apply -f k8s/secrets/database-credentials.local.yaml
 kubectl apply -f apps/users-api/manifests/postgres.yaml
-kubectl apply -f apps/users-api/manifests/deployment.yaml
-kubectl apply -f apps/users-api/manifests/service.yaml
+kubectl rollout status deployment/postgres -n users-api
 ```
 
-Validate the deployment:
+Install ingress-nginx:
 
 ```bash
-./scripts/validate.sh
+./scripts/install-ingress.sh
 ```
 
-## Local API Access
-
-Phase 1 uses temporary port-forwarding:
+Generate and apply the local TLS Secret:
 
 ```bash
-kubectl port-forward service/users-api 8080:80 -n users-api
+./scripts/generate-local-tls.sh
 ```
 
-Then test:
+Deploy the Users API with Helm:
 
 ```bash
-curl http://localhost:8080/healthz
-curl http://localhost:8080/readyz
-curl http://localhost:8080/users
+./scripts/deploy-helm.sh
+```
+
+Validate Phase 2:
+
+```bash
+./scripts/validate-phase2.sh
+```
+
+## Helm Deployment
+
+Install or upgrade the development environment:
+
+```bash
+helm upgrade --install users-api ./helm/users-api \
+  --namespace users-api \
+  --create-namespace \
+  -f helm/users-api/values-dev.yaml
+```
+
+Install or upgrade the staging environment values:
+
+```bash
+helm upgrade --install users-api ./helm/users-api \
+  --namespace users-api \
+  --create-namespace \
+  -f helm/users-api/values-staging.yaml
+```
+
+## Ingress and TLS
+
+Phase 2 exposes the API through:
+
+```text
+https://users-api.local
+```
+
+For command-line validation without editing `/etc/hosts`, use:
+
+```bash
+curl -k --resolve users-api.local:443:127.0.0.1 https://users-api.local/healthz
+curl -k --resolve users-api.local:443:127.0.0.1 https://users-api.local/readyz
+```
+
+To open it in a browser, add this entry to `/etc/hosts`:
+
+```text
+127.0.0.1 users-api.local
+```
+
+The local certificate is self-signed, so the browser will show a local trust warning.
+
+## Autoscaling
+
+The Helm chart creates an HPA:
+
+```text
+minReplicas: 2
+maxReplicas: 5
+targetCPUUtilizationPercentage: 70
+```
+
+Inspect it with:
+
+```bash
+kubectl get hpa -n users-api
+kubectl describe hpa users-api -n users-api
+```
+
+On a minimal Kind cluster without metrics-server, the HPA target can appear as `<unknown>`. The HPA object is still created and bound to the Deployment; installing metrics-server would provide live CPU utilization.
+
+## Rolling Updates
+
+Run the rolling update demo:
+
+```bash
+./scripts/demo-rolling-update.sh
+```
+
+Useful commands:
+
+```bash
+kubectl rollout status deployment/users-api -n users-api
+kubectl rollout history deployment/users-api -n users-api
+kubectl rollout undo deployment/users-api -n users-api
 ```
 
 ## Repository Structure
@@ -105,16 +193,20 @@ cloud-native-kubernetes-platform/
 ├── k8s/
 │   ├── namespaces/
 │   ├── configmaps/
-│   └── secrets/
+│   ├── secrets/
+│   ├── ingress/
+│   ├── tls/
+│   └── hpa/
 ├── apps/
 │   └── users-api/
 │       └── manifests/
+├── helm/
+│   └── users-api/
 └── scripts/
 ```
 
 ## Roadmap
 
-- Phase 2: Ingress, local TLS, Helm, HPA, and rolling updates
 - Phase 3: Network Policies and persistent storage
 - Phase 4: GitOps with ArgoCD
 - Phase 5: Observability evidence and professional presentation
