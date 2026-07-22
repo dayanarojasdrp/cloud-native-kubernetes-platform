@@ -5,6 +5,7 @@ set -euo pipefail
 CLUSTER_NAME="cloud-native-platform"
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CONFIG_FILE="${PROJECT_ROOT}/kind/cluster-config.yaml"
+RESET_CLUSTER="${RESET_CLUSTER:-false}"
 
 export PATH="${PROJECT_ROOT}/.bin:${PATH}"
 
@@ -24,6 +25,11 @@ for command in kind kubectl docker; do
     exit 1
   fi
 done
+
+if [[ "${RESET_CLUSTER}" == "true" ]] && kind get clusters | grep -qx "${CLUSTER_NAME}"; then
+  echo "Deleting existing Kind cluster '${CLUSTER_NAME}'..."
+  kind delete cluster --name "${CLUSTER_NAME}"
+fi
 
 if kind get clusters | grep -qx "${CLUSTER_NAME}"; then
   echo "Kind cluster '${CLUSTER_NAME}' already exists."

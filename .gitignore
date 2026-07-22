@@ -1,6 +1,12 @@
 # Local Kubernetes secrets
 k8s/secrets/*.local.yaml
 
+# Local TLS material
+k8s/tls/*.local.crt
+k8s/tls/*.local.key
+k8s/tls/*.local.csr
+k8s/tls/*.local.yaml
+
 # Local environment files
 .env
 .env.local
