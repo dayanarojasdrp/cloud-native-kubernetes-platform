@@ -2,7 +2,7 @@
 
 This project builds a local production-style Kubernetes platform around the Users API.
 
-## Phase 2 Architecture
+## Phase 3 Architecture
 
 ```text
                          macOS Host
@@ -28,15 +28,18 @@ This project builds a local production-style Kubernetes platform around the User
                               v
                  users-api Deployment managed by Helm
                          2 API Pods
+                         NetworkPolicy: only ingress-nginx inbound
                               |
                               | DB_URL from Secret
                               v
                        postgres Service
                        ClusterIP :5432
+                       NetworkPolicy: only users-api inbound
                               |
                               v
                     PostgreSQL Deployment
-                    temporary emptyDir storage
+                    PersistentVolumeClaim
+                    postgres-data
 ```
 
 ## Request Flow
@@ -108,6 +111,28 @@ revisionHistoryLimit: 5
 
 This allows the image tag to be updated while Kubernetes keeps serving traffic through ready Pods.
 
-## Phase 1 Foundation Still Present
+## Persistent Storage
 
-PostgreSQL remains intentionally temporary in Phase 2. It still uses `emptyDir` storage because persistent storage is reserved for Phase 3.
+PostgreSQL uses a PersistentVolumeClaim named `postgres-data`.
+
+In the local Kind cluster, the default `standard` StorageClass dynamically provisions a local PersistentVolume. This demonstrates PVC binding and data survival across PostgreSQL Pod restarts.
+
+## Network Security
+
+Phase 3 adds NetworkPolicies in the `users-api` namespace.
+
+```text
+default-deny-ingress
+  -> denies inbound traffic unless another policy allows it
+
+allow-ingress-to-api-from-ingress-controller
+  -> ingress-nginx controller can reach users-api Pods on TCP 8080
+
+allow-api-to-db
+  -> users-api Pods can reach PostgreSQL on TCP 5432
+
+deny-direct-db-access-from-other-namespaces
+  -> documents the database deny-by-default boundary
+```
+
+The local cluster currently uses `kindnet`, which does not enforce NetworkPolicies. The policies are still applied as valid Kubernetes resources, and enforcement can be tested by recreating the cluster with Calico or Cilium.

@@ -4,11 +4,11 @@
 
 This repository demonstrates a production-style Kubernetes platform for deploying and operating a cloud-native Go API.
 
-The project is built incrementally. Phase 1 established the Kubernetes foundation. Phase 2 adds platform features that make the deployment more realistic: Ingress, HTTPS, Helm packaging, autoscaling, and rolling updates.
+The project is built incrementally. Phase 1 established the Kubernetes foundation. Phase 2 added platform features such as Ingress, HTTPS, Helm packaging, autoscaling, and rolling updates. Phase 3 adds persistent storage and network security boundaries.
 
 ## Current Status
 
-Phase 2: Professional Kubernetes platform features.
+Phase 3: Security, persistent storage, and network policy foundations.
 
 ## What This Project Demonstrates
 
@@ -24,6 +24,9 @@ Phase 2: Professional Kubernetes platform features.
 - Horizontal Pod Autoscaling
 - Rolling updates and rollback
 - Environment-specific values
+- Persistent storage with PVCs
+- NetworkPolicy-based traffic restrictions
+- Security documentation and validation evidence
 
 ## Platform Features
 
@@ -33,6 +36,9 @@ Phase 2: Professional Kubernetes platform features.
 - Horizontal Pod Autoscaling
 - Rolling updates and rollback
 - Environment-specific values
+- PostgreSQL PersistentVolumeClaim
+- Default-deny ingress NetworkPolicies
+- Explicit ingress-to-api and api-to-database traffic rules
 
 ## Application
 
@@ -74,6 +80,7 @@ Apply the namespace, PostgreSQL configuration, local database Secret, and tempor
 kubectl apply -f k8s/namespaces/users-api.yaml
 kubectl apply -f k8s/configmaps/postgres-initdb-configmap.yaml
 kubectl apply -f k8s/secrets/database-credentials.local.yaml
+kubectl apply -f k8s/storage/postgres-pvc.yaml
 kubectl apply -f apps/users-api/manifests/postgres.yaml
 kubectl rollout status deployment/postgres -n users-api
 ```
@@ -100,6 +107,19 @@ Validate Phase 2:
 
 ```bash
 ./scripts/validate-phase2.sh
+```
+
+Apply Phase 3 security and storage resources:
+
+```bash
+kubectl apply -f k8s/storage/postgres-pvc.yaml
+kubectl apply -f k8s/network-policies/
+```
+
+Validate Phase 3:
+
+```bash
+./scripts/validate-phase3.sh
 ```
 
 ## Helm Deployment
@@ -164,6 +184,37 @@ kubectl describe hpa users-api -n users-api
 
 On a minimal Kind cluster without metrics-server, the HPA target can appear as `<unknown>`. The HPA object is still created and bound to the Deployment; installing metrics-server would provide live CPU utilization.
 
+## Network Policies
+
+Phase 3 adds NetworkPolicies in `k8s/network-policies/`.
+
+The intended traffic model is:
+
+```text
+ingress-nginx -> users-api -> postgres
+```
+
+The namespace starts from a default-deny ingress posture, then explicitly allows:
+
+- ingress-nginx controller traffic to the API on port `8080`
+- Users API Pod traffic to PostgreSQL on port `5432`
+
+Kind's default `kindnet` CNI does not enforce NetworkPolicies. The policy manifests are valid and applied, but packet-level blocking requires a NetworkPolicy-aware CNI such as Calico or Cilium.
+
+## Persistent Storage
+
+Phase 3 replaces PostgreSQL temporary `emptyDir` storage with a PersistentVolumeClaim:
+
+```text
+postgres-data
+```
+
+In the local Kind cluster, the default `standard` StorageClass uses the local-path provisioner. The Phase 3 validation script creates a user, restarts the PostgreSQL Pod, and confirms the data remains available.
+
+## Security Documentation
+
+See `docs/security.md`.
+
 ## Rolling Updates
 
 Run the rolling update demo:
@@ -196,7 +247,9 @@ cloud-native-kubernetes-platform/
 │   ├── secrets/
 │   ├── ingress/
 │   ├── tls/
-│   └── hpa/
+│   ├── hpa/
+│   ├── storage/
+│   └── network-policies/
 ├── apps/
 │   └── users-api/
 │       └── manifests/
@@ -207,7 +260,6 @@ cloud-native-kubernetes-platform/
 
 ## Roadmap
 
-- Phase 3: Network Policies and persistent storage
 - Phase 4: GitOps with ArgoCD
 - Phase 5: Observability evidence and professional presentation
 
