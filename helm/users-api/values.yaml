@@ -1,0 +1,77 @@
+replicaCount: 2
+
+image:
+  repository: users-api
+  tag: phase1-v1
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+labels:
+  partOf: cloud-native-kubernetes-platform
+  component: api
+
+config:
+  APP_ENV: development
+  PORT: "8080"
+  LOG_LEVEL: info
+  READ_TIMEOUT: 5s
+  WRITE_TIMEOUT: 10s
+  IDLE_TIMEOUT: 60s
+  REQUEST_TIMEOUT: 3s
+
+database:
+  existingSecret: database-credentials
+  urlKey: DB_URL
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: http
+
+ingress:
+  enabled: true
+  className: nginx
+  host: users-api.local
+  path: /
+  pathType: Prefix
+  tls:
+    enabled: true
+    secretName: users-api-tls
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    cpu: 250m
+    memory: 128Mi
+
+probes:
+  liveness:
+    path: /healthz
+    initialDelaySeconds: 10
+    periodSeconds: 10
+    timeoutSeconds: 3
+    failureThreshold: 3
+  readiness:
+    path: /readyz
+    initialDelaySeconds: 5
+    periodSeconds: 5
+    timeoutSeconds: 3
+    failureThreshold: 6
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+
+rollingUpdate:
+  maxUnavailable: 0
+  maxSurge: 1
+
+revisionHistoryLimit: 5

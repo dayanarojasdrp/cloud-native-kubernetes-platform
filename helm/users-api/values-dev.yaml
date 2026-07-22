@@ -1,0 +1,14 @@
+replicaCount: 2
+
+config:
+  APP_ENV: development
+  LOG_LEVEL: debug
+
+ingress:
+  host: users-api.local
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70

@@ -1,0 +1,8 @@
+Users API has been deployed.
+
+Ingress host:
+  https://{{ .Values.ingress.host }}
+
+Validate with:
+  curl -k --noproxy "*" --resolve {{ .Values.ingress.host }}:443:127.0.0.1 https://{{ .Values.ingress.host }}/healthz
+  curl -k --noproxy "*" --resolve {{ .Values.ingress.host }}:443:127.0.0.1 https://{{ .Values.ingress.host }}/readyz
