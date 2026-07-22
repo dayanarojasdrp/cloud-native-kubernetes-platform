@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloud-native-platform
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: cloud-native-platform
+    app.kubernetes.io/part-of: cloud-native-kubernetes-platform
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/dayanarojasdrp/cloud-native-kubernetes-platform.git
+    targetRevision: main
+    path: argocd/applications
+    directory:
+      recurse: true
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -23,6 +23,7 @@ spec:
         {{- include "users-api.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: {{ .Values.labels.component }}
         app.kubernetes.io/part-of: {{ .Values.labels.partOf }}
+        environment: {{ .Values.config.APP_ENV }}
     spec:
       containers:
         - name: {{ include "users-api.name" . }}

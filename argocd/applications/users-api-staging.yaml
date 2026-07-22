@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: users-api-staging
+  namespace: argocd
+  labels:
+    app.kubernetes.io/name: users-api
+    app.kubernetes.io/part-of: cloud-native-kubernetes-platform
+    environment: staging
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/dayanarojasdrp/cloud-native-kubernetes-platform.git
+    targetRevision: main
+    path: helm/users-api
+    helm:
+      releaseName: users-api-staging
+      values: |
+        fullnameOverride: users-api-staging
+
+        replicaCount: 2
+
+        config:
+          APP_ENV: staging
+          LOG_LEVEL: info
+
+        ingress:
+          host: users-api.staging.local
+          tls:
+            secretName: users-api-tls
+
+        autoscaling:
+          enabled: true
+          minReplicas: 2
+          maxReplicas: 5
+          targetCPUUtilizationPercentage: 70
+
+        resources:
+          requests:
+            cpu: 75m
+            memory: 96Mi
+          limits:
+            cpu: 300m
+            memory: 192Mi
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: users-api
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false

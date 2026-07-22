@@ -4,11 +4,11 @@
 
 This repository demonstrates a production-style Kubernetes platform for deploying and operating a cloud-native Go API.
 
-The project is built incrementally. Phase 1 established the Kubernetes foundation. Phase 2 added platform features such as Ingress, HTTPS, Helm packaging, autoscaling, and rolling updates. Phase 3 adds persistent storage and network security boundaries.
+The project is built incrementally. Phase 1 established the Kubernetes foundation. Phase 2 added platform features such as Ingress, HTTPS, Helm packaging, autoscaling, and rolling updates. Phase 3 added persistent storage and network security boundaries. Phase 4 adds GitOps delivery with ArgoCD.
 
 ## Current Status
 
-Phase 3: Security, persistent storage, and network policy foundations.
+Phase 4: GitOps delivery with ArgoCD, automated sync, self-heal, and dev/staging environment separation.
 
 ## What This Project Demonstrates
 
@@ -27,6 +27,9 @@ Phase 3: Security, persistent storage, and network policy foundations.
 - Persistent storage with PVCs
 - NetworkPolicy-based traffic restrictions
 - Security documentation and validation evidence
+- GitOps delivery with ArgoCD
+- Automated sync, pruning, and self-healing
+- Dev and staging GitOps Applications
 
 ## Platform Features
 
@@ -39,6 +42,9 @@ Phase 3: Security, persistent storage, and network policy foundations.
 - PostgreSQL PersistentVolumeClaim
 - Default-deny ingress NetworkPolicies
 - Explicit ingress-to-api and api-to-database traffic rules
+- ArgoCD app-of-apps workflow
+- Git-driven Helm releases for dev and staging
+- Automated drift correction through self-heal
 
 ## Application
 
@@ -120,6 +126,24 @@ Validate Phase 3:
 
 ```bash
 ./scripts/validate-phase3.sh
+```
+
+Install ArgoCD:
+
+```bash
+./scripts/install-argocd.sh
+```
+
+Apply the GitOps root Application:
+
+```bash
+./scripts/apply-argocd-apps.sh
+```
+
+Validate Phase 4:
+
+```bash
+./scripts/validate-gitops.sh
 ```
 
 ## Helm Deployment
@@ -215,6 +239,39 @@ In the local Kind cluster, the default `standard` StorageClass uses the local-pa
 
 See `docs/security.md`.
 
+## GitOps with ArgoCD
+
+Phase 4 introduces ArgoCD as the GitOps controller.
+
+The desired state lives in Git:
+
+```text
+argocd/app-of-apps/cloud-native-platform.yaml
+argocd/applications/users-api-dev.yaml
+argocd/applications/users-api-staging.yaml
+```
+
+The root app-of-apps points ArgoCD at `argocd/applications/`. ArgoCD then creates and reconciles the `users-api-dev` and `users-api-staging` Applications.
+
+Both environment Applications deploy the same Helm chart from:
+
+```text
+helm/users-api
+```
+
+Environment differences are defined through Helm values in each ArgoCD Application:
+
+- `users-api-dev`: `users-api.dev.local`, 1-3 replicas, development config
+- `users-api-staging`: `users-api.staging.local`, 2-5 replicas, staging config
+
+Each Application enables:
+
+- automated sync
+- prune
+- self-heal
+
+See `docs/gitops-flow.md`.
+
 ## Rolling Updates
 
 Run the rolling update demo:
@@ -238,7 +295,12 @@ cloud-native-kubernetes-platform/
 ├── README.md
 ├── docs/
 │   ├── architecture.md
+│   ├── gitops-flow.md
 │   └── screenshots/
+├── argocd/
+│   ├── applications/
+│   ├── app-of-apps/
+│   └── environments/
 ├── kind/
 │   └── cluster-config.yaml
 ├── k8s/
