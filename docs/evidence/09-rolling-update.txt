@@ -1,0 +1,9 @@
+# Rolling Update
+# Command: kubectl rollout history deployment/users-api -n users-api && kubectl rollout status deployment/users-api -n users-api
+
+deployment.apps/users-api 
+REVISION  CHANGE-CAUSE
+2         <none>
+3         <none>
+
+deployment "users-api" successfully rolled out

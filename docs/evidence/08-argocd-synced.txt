@@ -1,0 +1,15 @@
+# ArgoCD Applications - Controller Pending
+# Command: kubectl get applications -n argocd -o wide && kubectl get pods -n argocd
+
+NAME                    SYNC STATUS   HEALTH STATUS   REVISION
+cloud-native-platform                                 
+users-api-dev                                         
+users-api-staging                                     
+NAME                                               READY   STATUS                  RESTARTS   AGE
+argocd-application-controller-0                    0/1     ImagePullBackOff        0          33m
+argocd-applicationset-controller-9868b4496-jnbkg   0/1     ImagePullBackOff        0          33m
+argocd-dex-server-655f4f7b75-vzt9n                 0/1     Init:ImagePullBackOff   0          33m
+argocd-notifications-controller-6ddf554d54-bfw5b   0/1     ImagePullBackOff        0          33m
+argocd-redis-79c9bd545b-sbhxs                      1/1     Running                 0          33m
+argocd-repo-server-fbfcf6f56-hzs4d                 0/1     Init:ImagePullBackOff   0          33m
+argocd-server-5f6f7b85b6-57sgq                     0/1     ImagePullBackOff        0          33m

@@ -1,0 +1,6 @@
+# Ingress HTTPS
+# Command: kubectl get ingress -n users-api && curl --fail --silent --show-error --insecure --noproxy '*' --resolve users-api.local:443:127.0.0.1 https://users-api.local/readyz
+
+NAME        CLASS   HOSTS             ADDRESS     PORTS     AGE
+users-api   nginx   users-api.local   localhost   80, 443   25h
+{"checks":{"database":"ok"},"status":"ready"}

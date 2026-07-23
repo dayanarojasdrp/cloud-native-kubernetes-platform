@@ -1,0 +1,5 @@
+# Helm Release
+# Command: helm list -n users-api
+
+NAME     	NAMESPACE	REVISION	UPDATED                             	STATUS  	CHART          	APP VERSION
+users-api	users-api	4       	2026-07-22 11:54:43.170241 -0400 CDT	deployed	users-api-0.2.0	phase1-v1  

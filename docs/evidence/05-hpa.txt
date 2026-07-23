@@ -1,0 +1,5 @@
+# Horizontal Pod Autoscaler
+# Command: kubectl get hpa -n users-api -o wide
+
+NAME        REFERENCE              TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+users-api   Deployment/users-api   cpu: <unknown>/70%   2         5         2          25h
