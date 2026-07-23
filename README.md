@@ -134,6 +134,13 @@ Install ArgoCD:
 ./scripts/install-argocd.sh
 ```
 
+If the local cluster hits registry timeouts while pulling ArgoCD images, preload them into Kind and rerun the installer:
+
+```bash
+./scripts/preload-argocd-images.sh
+./scripts/install-argocd.sh
+```
+
 Apply the GitOps root Application:
 
 ```bash
@@ -272,6 +279,8 @@ Each Application enables:
 
 See `docs/gitops-flow.md`.
 
+For local ArgoCD installation troubleshooting, see `docs/argocd-troubleshooting.md`.
+
 ## Rolling Updates
 
 Run the rolling update demo:
@@ -295,6 +304,7 @@ cloud-native-kubernetes-platform/
 ├── README.md
 ├── docs/
 │   ├── architecture.md
+│   ├── argocd-troubleshooting.md
 │   ├── gitops-flow.md
 │   └── screenshots/
 ├── argocd/

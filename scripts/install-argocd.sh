@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ARGOCD_NAMESPACE="${ARGOCD_NAMESPACE:-argocd}"
-ARGOCD_VERSION="${ARGOCD_VERSION:-stable}"
+ARGOCD_VERSION="${ARGOCD_VERSION:-v2.10.7}"
 MANIFEST_URL="https://raw.githubusercontent.com/argoproj/argo-cd/${ARGOCD_VERSION}/manifests/install.yaml"
 MANIFEST_FILE="$(mktemp)"
 
@@ -20,10 +20,12 @@ kubectl create namespace "${ARGOCD_NAMESPACE}" \
   -o yaml \
   | kubectl apply -f -
 
-curl --fail --silent --show-error --location "${MANIFEST_URL}" \
+curl --fail --silent --show-error --location --retry 5 --retry-delay 5 "${MANIFEST_URL}" \
   > "${MANIFEST_FILE}"
 
 kubectl apply \
+  --server-side \
+  --force-conflicts \
   --namespace "${ARGOCD_NAMESPACE}" \
   -f "${MANIFEST_FILE}"
 

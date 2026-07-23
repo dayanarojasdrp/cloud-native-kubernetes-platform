@@ -103,10 +103,29 @@ Install ArgoCD:
 ./scripts/install-argocd.sh
 ```
 
+The installer pins ArgoCD to a known version for reproducibility and uses server-side apply for the ArgoCD CRDs:
+
+```text
+ARGOCD_VERSION=v2.10.7
+kubectl apply --server-side --force-conflicts
+```
+
+The version can be overridden when needed:
+
+```bash
+ARGOCD_VERSION=v3.4.2 ./scripts/install-argocd.sh
+```
+
 Apply the root app-of-apps:
 
 ```bash
 ./scripts/apply-argocd-apps.sh
+```
+
+If the Kind cluster cannot pull ArgoCD images because of registry timeouts or rate limiting, preload them first:
+
+```bash
+./scripts/preload-argocd-images.sh
 ```
 
 Validate the GitOps-managed environments:
