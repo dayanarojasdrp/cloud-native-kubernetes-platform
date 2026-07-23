@@ -26,6 +26,8 @@ Then rerun the installer:
 ./scripts/install-argocd.sh
 ```
 
+If `kind load docker-image` fails because of a multi-architecture image import issue, the preload script falls back to direct `containerd` import inside each Kind node.
+
 ## CRD Annotation Limit
 
 Large ArgoCD CRDs can fail with client-side apply because of the `kubectl.kubernetes.io/last-applied-configuration` annotation size limit.

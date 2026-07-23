@@ -2,4 +2,4 @@
 # Command: kubectl get pvc -n users-api -o wide
 
 NAME            STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE   VOLUMEMODE
-postgres-data   Bound    pvc-263ba84f-bddd-47a8-8bda-76680e2d8d2a   1Gi        RWO            standard       <unset>                 23h   Filesystem
+postgres-data   Bound    pvc-263ba84f-bddd-47a8-8bda-76680e2d8d2a   1Gi        RWO            standard       <unset>                 24h   Filesystem

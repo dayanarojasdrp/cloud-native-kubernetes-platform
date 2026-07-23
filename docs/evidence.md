@@ -31,9 +31,17 @@ The following capabilities are backed by captured command output:
 - Rolling update history and rollout status are available.
 - ArgoCD CRDs and Application resources exist.
 
-## Current ArgoCD Note
+## ArgoCD Status
 
-The ArgoCD Application manifests are present and valid, and the Application CRDs are installed. In the captured local run, the ArgoCD controller Pods could not become ready because the Kind node could not pull `quay.io/argoproj/argocd:v2.10.7`.
+The latest captured run shows:
+
+```text
+cloud-native-platform   Synced   Healthy
+users-api-dev           Synced   Healthy
+users-api-staging       Synced   Healthy
+```
+
+During setup, the local Kind cluster temporarily failed to pull `quay.io/argoproj/argocd:v2.10.7`.
 
 Observed registry/network errors included:
 
@@ -44,4 +52,4 @@ connection refused
 lookup quay.io ... no such host
 ```
 
-See `docs/argocd-troubleshooting.md` for the recovery path.
+The recovery path was to pull the image locally, load it into Kind, restart the ArgoCD Pods, and re-run GitOps validation. See `docs/argocd-troubleshooting.md`.

@@ -2,7 +2,7 @@
 # Command: kubectl get networkpolicy -n users-api
 
 NAME                                           POD-SELECTOR                                                           AGE
-allow-api-to-db                                app.kubernetes.io/component=database,app.kubernetes.io/name=postgres   23h
-allow-ingress-to-api-from-ingress-controller   app.kubernetes.io/component=api,app.kubernetes.io/name=users-api       23h
-default-deny-ingress                           <none>                                                                 23h
-deny-direct-db-access-from-other-namespaces    app.kubernetes.io/component=database,app.kubernetes.io/name=postgres   23h
+allow-api-to-db                                app.kubernetes.io/component=database,app.kubernetes.io/name=postgres   24h
+allow-ingress-to-api-from-ingress-controller   app.kubernetes.io/component=api,app.kubernetes.io/name=users-api       24h
+default-deny-ingress                           <none>                                                                 24h
+deny-direct-db-access-from-other-namespaces    app.kubernetes.io/component=database,app.kubernetes.io/name=postgres   24h

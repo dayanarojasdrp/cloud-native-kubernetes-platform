@@ -1,7 +1,10 @@
 # Pods Running
 # Command: kubectl get pods -n users-api -o wide
 
-NAME                         READY   STATUS    RESTARTS   AGE   IP            NODE                           NOMINATED NODE   READINESS GATES
-postgres-59cd7957c5-db67p    1/1     Running   0          23h   10.244.1.23   cloud-native-platform-worker   <none>           <none>
-users-api-6cdc8fd5f9-hn24b   1/1     Running   0          24h   10.244.1.18   cloud-native-platform-worker   <none>           <none>
-users-api-6cdc8fd5f9-jhvhr   1/1     Running   0          24h   10.244.1.17   cloud-native-platform-worker   <none>           <none>
+NAME                                 READY   STATUS    RESTARTS   AGE     IP            NODE                           NOMINATED NODE   READINESS GATES
+postgres-59cd7957c5-db67p            1/1     Running   0          24h     10.244.1.23   cloud-native-platform-worker   <none>           <none>
+users-api-6cdc8fd5f9-hn24b           1/1     Running   0          25h     10.244.1.18   cloud-native-platform-worker   <none>           <none>
+users-api-6cdc8fd5f9-jhvhr           1/1     Running   0          25h     10.244.1.17   cloud-native-platform-worker   <none>           <none>
+users-api-dev-764d8c559c-bhk7r       1/1     Running   0          3m41s   10.244.1.62   cloud-native-platform-worker   <none>           <none>
+users-api-staging-7978d9d459-kzjjq   1/1     Running   0          3m26s   10.244.1.64   cloud-native-platform-worker   <none>           <none>
+users-api-staging-7978d9d459-lw9h5   1/1     Running   0          3m41s   10.244.1.63   cloud-native-platform-worker   <none>           <none>

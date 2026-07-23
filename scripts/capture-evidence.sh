@@ -44,7 +44,7 @@ capture "04-helm-release" "Helm Release" "helm list -n users-api"
 capture "05-hpa" "Horizontal Pod Autoscaler" "kubectl get hpa -n users-api -o wide"
 capture "06-network-policies" "Network Policies" "kubectl get networkpolicy -n users-api"
 capture "07-pvc" "Persistent Volume Claim" "kubectl get pvc -n users-api -o wide"
-capture "08-argocd-synced" "ArgoCD Applications - Controller Pending" "kubectl get applications -n argocd -o wide && kubectl get pods -n argocd"
+capture "08-argocd-synced" "ArgoCD Applications - Synced Healthy" "kubectl get applications -n argocd -o wide && kubectl get pods -n argocd"
 capture "09-rolling-update" "Rolling Update" "kubectl rollout history deployment/users-api -n users-api && kubectl rollout status deployment/users-api -n users-api"
 
 echo

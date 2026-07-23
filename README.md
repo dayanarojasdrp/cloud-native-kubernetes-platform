@@ -321,7 +321,7 @@ See `docs/gitops-flow.md`.
 
 For local ArgoCD installation troubleshooting, see `docs/argocd-troubleshooting.md`.
 
-In the latest local capture, the ArgoCD Application resources were created but the controller Pods were blocked by registry/DNS failures while pulling the ArgoCD image from Quay. The repo includes the manifests, installer hardening, preload script, and troubleshooting path needed to complete reconciliation once the registry is reachable.
+The latest local capture shows the root app-of-apps, dev Application, and staging Application in `Synced` and `Healthy` state.
 
 ## Rolling Updates
 
@@ -387,4 +387,4 @@ cloud-native-kubernetes-platform/
 
 ## Project Status
 
-This project is interview-ready as a local Kubernetes platform portfolio project, with one documented local environment blocker: ArgoCD controller image pulls from Quay can fail when Docker Desktop or the network cannot resolve or reach the registry.
+This project is interview-ready as a local Kubernetes platform portfolio project.
