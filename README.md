@@ -4,11 +4,21 @@
 
 This repository demonstrates a production-style Kubernetes platform for deploying and operating a cloud-native Go API.
 
-The project is built incrementally. Phase 1 established the Kubernetes foundation. Phase 2 added platform features such as Ingress, HTTPS, Helm packaging, autoscaling, and rolling updates. Phase 3 added persistent storage and network security boundaries. Phase 4 adds GitOps delivery with ArgoCD.
+The project is built incrementally. Phase 1 established the Kubernetes foundation. Phase 2 added platform features such as Ingress, HTTPS, Helm packaging, autoscaling, and rolling updates. Phase 3 added persistent storage and network security boundaries. Phase 4 added GitOps delivery with ArgoCD. Phase 5 adds evidence, troubleshooting, and professional presentation material.
 
 ## Current Status
 
-Phase 4: GitOps delivery with ArgoCD, automated sync, self-heal, and dev/staging environment separation.
+Phase 5: Evidence and professional presentation for a production-style Kubernetes platform.
+
+Fast review:
+
+- Architecture diagram: `docs/screenshots/01-architecture.png`
+- Evidence index: `docs/evidence.md`
+- Demo script: `docs/demo-script.md`
+- Demo video outline: `docs/demo-video-outline.md`
+- Interview talking points: `docs/interview-talking-points.md`
+- Observability notes: `docs/observability.md`
+- Troubleshooting guide: `docs/troubleshooting.md`
 
 ## What This Project Demonstrates
 
@@ -30,6 +40,8 @@ Phase 4: GitOps delivery with ArgoCD, automated sync, self-heal, and dev/staging
 - GitOps delivery with ArgoCD
 - Automated sync, pruning, and self-healing
 - Dev and staging GitOps Applications
+- Evidence screenshots and raw command output
+- Demo and interview-ready documentation
 
 ## Platform Features
 
@@ -45,6 +57,8 @@ Phase 4: GitOps delivery with ArgoCD, automated sync, self-heal, and dev/staging
 - ArgoCD app-of-apps workflow
 - Git-driven Helm releases for dev and staging
 - Automated drift correction through self-heal
+- Repeatable evidence capture workflow
+- Recruiter-friendly project walkthrough
 
 ## Application
 
@@ -152,6 +166,32 @@ Validate Phase 4:
 ```bash
 ./scripts/validate-gitops.sh
 ```
+
+Capture Phase 5 evidence:
+
+```bash
+./scripts/capture-evidence.sh
+```
+
+The script writes PNG screenshots to `docs/screenshots/` and raw command output to `docs/evidence/`.
+
+## Evidence
+
+The mandatory evidence screenshots are:
+
+```text
+docs/screenshots/01-architecture.png
+docs/screenshots/02-pods-running.png
+docs/screenshots/03-ingress-https.png
+docs/screenshots/04-helm-release.png
+docs/screenshots/05-hpa.png
+docs/screenshots/06-network-policies.png
+docs/screenshots/07-pvc.png
+docs/screenshots/08-argocd-synced.png
+docs/screenshots/09-rolling-update.png
+```
+
+See `docs/evidence.md` for the evidence index and current validation notes.
 
 ## Helm Deployment
 
@@ -281,6 +321,8 @@ See `docs/gitops-flow.md`.
 
 For local ArgoCD installation troubleshooting, see `docs/argocd-troubleshooting.md`.
 
+In the latest local capture, the ArgoCD Application resources were created but the controller Pods were blocked by registry/DNS failures while pulling the ArgoCD image from Quay. The repo includes the manifests, installer hardening, preload script, and troubleshooting path needed to complete reconciliation once the registry is reachable.
+
 ## Rolling Updates
 
 Run the rolling update demo:
@@ -305,7 +347,14 @@ cloud-native-kubernetes-platform/
 ├── docs/
 │   ├── architecture.md
 │   ├── argocd-troubleshooting.md
+│   ├── demo-video-outline.md
+│   ├── demo-script.md
+│   ├── evidence.md
+│   ├── evidence/
 │   ├── gitops-flow.md
+│   ├── interview-talking-points.md
+│   ├── observability.md
+│   ├── troubleshooting.md
 │   └── screenshots/
 ├── argocd/
 │   ├── applications/
@@ -332,9 +381,10 @@ cloud-native-kubernetes-platform/
 
 ## Roadmap
 
-- Phase 4: GitOps with ArgoCD
-- Phase 5: Observability evidence and professional presentation
+- Connect this platform to a dedicated observability stack or add kube-prometheus-stack.
+- Add GitHub Actions for Helm lint, template rendering, and policy validation.
+- Add GitOps-safe secret management with External Secrets or Sealed Secrets.
 
 ## Project Status
 
-This project is under active development.
+This project is interview-ready as a local Kubernetes platform portfolio project, with one documented local environment blocker: ArgoCD controller image pulls from Quay can fail when Docker Desktop or the network cannot resolve or reach the registry.
