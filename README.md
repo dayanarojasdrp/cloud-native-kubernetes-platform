@@ -189,6 +189,7 @@ docs/screenshots/06-network-policies.png
 docs/screenshots/07-pvc.png
 docs/screenshots/08-argocd-synced.png
 docs/screenshots/09-rolling-update.png
+docs/screenshots/10-argocd-ui.png
 ```
 
 See `docs/evidence.md` for the evidence index and current validation notes.

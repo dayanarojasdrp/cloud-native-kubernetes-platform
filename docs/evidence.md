@@ -15,6 +15,7 @@ This page is the fast review path for the platform.
 | PostgreSQL PVC | `docs/screenshots/07-pvc.png` |
 | ArgoCD Applications | `docs/screenshots/08-argocd-synced.png` |
 | Rolling update history/status | `docs/screenshots/09-rolling-update.png` |
+| ArgoCD UI | `docs/screenshots/10-argocd-ui.png` |
 
 Raw command output is stored in `docs/evidence/`.
 
